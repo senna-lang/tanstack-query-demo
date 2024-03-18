@@ -1,22 +1,12 @@
-import { useQuery, QueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-
-const queyClient = new QueryClient();
+import { usePosts } from '../hooks/usePosts';
 
 const Posts = ({
   setPostId,
 }: {
   setPostId: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  const { data, status } = useQuery({
-    queryKey: ['posts'],
-    queryFn: async () => {
-      const { data } = await axios.get(
-        'https://jsonplaceholder.typicode.com/posts'
-      );
-      return data;
-    },
-  });
+  const { data, status, queryClient } = usePosts();
+  // const cachePost = queryClient.getQueryData(['posts'])
   return (
     <div>
       <h1>投稿一覧</h1>
@@ -31,7 +21,7 @@ const Posts = ({
                   href="#"
                   onClick={() => setPostId(post.id)}
                   style={
-                    queyClient.getQueriesData(['post',post.id])
+                    queryClient.getQueriesData(['posts',post.id])
                       ? { fontWeight: 'bold', color: 'green' }
                       : {}
                   }
